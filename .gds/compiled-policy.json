@@ -1,0 +1,536 @@
+{
+  "schema_version": 1,
+  "compiled_policy": {
+    "repository_id": "repo_01KYVP9WMQ9RXE1DWP1E2SMTTZ",
+    "bundle_version": "0.4.0-dev",
+    "digest": "sha256:879600901b72d642864b7c4d6f46da761f3a114ed88fb64200608ad20e4edf09"
+  },
+  "sources": [
+    {
+      "id": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "distribution": "public",
+      "path": "policies/base/repository-default.yaml",
+      "digest": "sha256:538f486d49620c169cbbac77745ce2ecc21010ebd4a564017c79cefbb468ca1e"
+    },
+    {
+      "id": "personal-default",
+      "tier": "owner",
+      "priority": 100,
+      "distribution": "public",
+      "path": "policies/owners/personal-default.yaml",
+      "digest": "sha256:25d939880788c237ecffe8c4a87954e769a9b5e2624a55977f396a1cbfef0686"
+    }
+  ],
+  "effective": {
+    "agent": {
+      "generated_projection_edit": "forbidden",
+      "profiles": [
+        "core"
+      ]
+    },
+    "context": {
+      "private_parent_persistence": "forbidden"
+    },
+    "git": {
+      "branch_cleanup": "merged-only",
+      "default_branch": "main",
+      "integration": "pull-request"
+    },
+    "github": {
+      "actions": {
+        "allowed_actions": {
+          "management": "observed"
+        },
+        "enabled": {
+          "management": "managed",
+          "value": true
+        },
+        "selected_actions": {
+          "management": "observed"
+        },
+        "sha_pinning_required": {
+          "management": "observed"
+        }
+      },
+      "merge": {
+        "allow_auto_merge": {
+          "management": "managed",
+          "value": false
+        },
+        "allow_merge_commit": {
+          "management": "managed",
+          "value": false
+        },
+        "allow_rebase_merge": {
+          "management": "managed",
+          "value": false
+        },
+        "allow_squash_merge": {
+          "management": "managed",
+          "value": true
+        },
+        "allow_update_branch": {
+          "management": "managed",
+          "value": true
+        },
+        "delete_branch_on_merge": {
+          "management": "managed",
+          "value": true
+        },
+        "merge_commit_message": {
+          "management": "observed"
+        },
+        "merge_commit_title": {
+          "management": "observed"
+        },
+        "squash_merge_commit_message": {
+          "management": "managed",
+          "value": "PR_BODY"
+        },
+        "squash_merge_commit_title": {
+          "management": "managed",
+          "value": "PR_TITLE"
+        }
+      },
+      "releases": {
+        "immutable": {
+          "management": "observed"
+        }
+      },
+      "rulesets": {
+        "management": "observed"
+      },
+      "security": {
+        "management": "observed"
+      },
+      "workflow": {
+        "can_approve_pull_request_reviews": {
+          "management": "managed",
+          "value": false
+        },
+        "default_workflow_permissions": {
+          "management": "managed",
+          "value": "read"
+        }
+      }
+    },
+    "package_management": {
+      "forbidden_executables": [
+        "pip",
+        "pipx",
+        "poetry",
+        "npm",
+        "npx",
+        "pnpm",
+        "yarn",
+        "corepack",
+        "mise",
+        "asdf"
+      ],
+      "language_dependency_managers": [
+        "uv",
+        "bun"
+      ],
+      "mutable_version_resolution": "forbidden",
+      "npm_family_on_managed_path": "forbidden",
+      "remote_stream_to_shell": "forbidden"
+    },
+    "rollout": {
+      "mode": "pull-request"
+    },
+    "security": {
+      "external_write_requires_approval": true,
+      "public_projection_scan": "required",
+      "secrets_in_repository": "forbidden"
+    }
+  },
+  "provenance": {
+    "/effective/agent/generated_projection_edit": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/agent/profiles/0": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "append"
+    },
+    "/effective/context/private_parent_persistence": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/git/branch_cleanup": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/git/default_branch": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/git/integration": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/actions/allowed_actions/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/actions/enabled/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/actions/enabled/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/actions/selected_actions/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/actions/sha_pinning_required/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_auto_merge/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_auto_merge/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_merge_commit/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_merge_commit/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_rebase_merge/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_rebase_merge/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_squash_merge/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_squash_merge/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_update_branch/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/allow_update_branch/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/delete_branch_on_merge/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/delete_branch_on_merge/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/merge_commit_message/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/merge_commit_title/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/squash_merge_commit_message/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/squash_merge_commit_message/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/squash_merge_commit_title/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/merge/squash_merge_commit_title/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/releases/immutable/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/rulesets/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/security/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/workflow/can_approve_pull_request_reviews/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/workflow/can_approve_pull_request_reviews/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/workflow/default_workflow_permissions/management": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/github/workflow/default_workflow_permissions/value": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/0": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/1": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/2": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/3": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/4": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/5": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/6": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/7": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/8": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/forbidden_executables/9": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/language_dependency_managers/0": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/language_dependency_managers/1": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/mutable_version_resolution": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/npm_family_on_managed_path": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/package_management/remote_stream_to_shell": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/rollout/mode": {
+      "source": "personal-default",
+      "tier": "owner",
+      "priority": 100,
+      "file": "policies/owners/personal-default.yaml",
+      "operation": "set"
+    },
+    "/effective/security/external_write_requires_approval": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/security/public_projection_scan": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    },
+    "/effective/security/secrets_in_repository": {
+      "source": "repository-default",
+      "tier": "base",
+      "priority": 100,
+      "file": "policies/base/repository-default.yaml",
+      "operation": "set"
+    }
+  }
+}
