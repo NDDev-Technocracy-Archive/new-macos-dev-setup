@@ -1,0 +1,4 @@
+# openai.com answers automated link checks with 403 (bot protection).
+^https://openai\.com/codex/$
+# The stargazers page of the transferred repository does not follow the owner rename.
+^https://github\.com/rldyourmnd/new-macos-dev-setup/stargazers$

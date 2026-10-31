@@ -7,3 +7,5 @@ MD012: false
 MD024: false
 MD029: false
 MD032: false
+# The archive deprecation banner opens README.md as a blockquote.
+MD028: false

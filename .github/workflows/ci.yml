@@ -1,109 +1,105 @@
-name: CI
+name: ci
 
 on:
   pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: read
 
-permissions: {}
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  # Obsolete pull-request heads are cancelled; a running main validation always completes.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # ---------------------------------------------------------------------------
-  # Bespoke jobs: shell checks and macOS bootstrap smoke test.
-  # No ci-workflows equivalent exists for these.
-  # ---------------------------------------------------------------------------
-  shell_lint:
-    name: Shell Lint
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
+  shell:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@b4ffde65f46336488b8621a4f500c1c0b6c0f1df # v4.1.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
-      - name: Install shellcheck
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shellcheck
-
-      - name: Shellcheck bootstrap scripts
+      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/tools@ab62f45b2a3067e5a7425d703f7fd07f1618b72c # nddev-cicd-v0.6.14
+        with:
+          capability: shell
+      - name: ShellCheck and Bash syntax
         run: |
           find scripts -type f -name "*.sh" -print0 | xargs -0 -n1 shellcheck -x -e SC1090,SC1091,SC2034,SC2086
           shellcheck -x -e SC1090,SC1091,SC2034,SC2086 install-macos.sh
-
-  shell_syntax:
-    name: Shell Syntax
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@b4ffde65f46336488b8621a4f500c1c0b6c0f1df # v4.1.1
-        with:
-          persist-credentials: false
-
-      - name: Bash syntax check
-        run: |
           find scripts -type f -name "*.sh" -print0 | xargs -0 -n1 bash -n
           bash -n install-macos.sh
 
-  bootstrap_smoke:
-    name: Bootstrap Smoke
-    runs-on: macos-latest
-    permissions:
-      contents: read
+  bootstrap-smoke:
+    runs-on: macos-26
+    timeout-minutes: 15
+    if: ${{ github.event_name != 'pull_request' }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@b4ffde65f46336488b8621a4f500c1c0b6c0f1df # v4.1.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
       - name: Entrypoint help
         run: |
           ./install-macos.sh --help
           ./scripts/bootstrap/bootstrap.sh --help
           ./scripts/bootstrap/setup-macos-dev-stack.sh --help
-
       - name: Linux placeholder execution
         run: ./scripts/bootstrap/bootstrap.sh --os linux --skip-health-check
 
-  # ---------------------------------------------------------------------------
-  # Reusable workflow calls (pinned to ci-workflows SHA).
-  # ---------------------------------------------------------------------------
-  docs-quality:
-    name: docs-quality
-    permissions:
-      contents: read
-    uses: NDDev-it-com/ci-workflows/.github/workflows/docs-quality.yml@b05016e27151e2d5b3f07e1d856fff50f635ab15
+  docs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
+        with:
+          globs: '**/*.md'
+      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/tools@ab62f45b2a3067e5a7425d703f7fd07f1618b72c # nddev-cicd-v0.6.14
+        with:
+          capability: quality
+      - name: Links and spelling
+        run: |
+          lychee --no-progress --max-concurrency 8 '**/*.md'
+          typos
 
-  actionlint:
-    name: actionlint
-    permissions:
-      contents: read
-    uses: NDDev-it-com/ci-workflows/.github/workflows/actionlint.yml@b05016e27151e2d5b3f07e1d856fff50f635ab15
+  workflows:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/tools@ab62f45b2a3067e5a7425d703f7fd07f1618b72c # nddev-cicd-v0.6.14
+        with:
+          capability: security
+      - name: Lint and audit workflows
+        run: |
+          actionlint
+          zizmor --offline --no-progress .github
+      - name: Scan new pull request commits, or the full history on main
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ -n "$BASE" ]; then
+            gitleaks git --no-banner --redact --log-opts="$BASE..$HEAD" .
+          else
+            gitleaks git --no-banner --redact .
+          fi
 
-  secret-scan:
-    name: secret-scan
-    permissions:
-      contents: read
-    uses: NDDev-it-com/ci-workflows/.github/workflows/secret-scan.yml@b05016e27151e2d5b3f07e1d856fff50f635ab15
-
-  zizmor:
-    name: zizmor (SARIF)
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    uses: NDDev-it-com/ci-workflows/.github/workflows/zizmor-sarif.yml@b05016e27151e2d5b3f07e1d856fff50f635ab15
-
-  dependency-review:
-    name: dependency-review
-    permissions:
-      contents: read
-      pull-requests: write
-    uses: NDDev-it-com/ci-workflows/.github/workflows/public-dependency-review.yml@b05016e27151e2d5b3f07e1d856fff50f635ab15
+  gate:
+    needs: [shell, bootstrap-smoke, docs, workflows]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/gate@ab62f45b2a3067e5a7425d703f7fd07f1618b72c # nddev-cicd-v0.6.14
+        with:
+          needs: ${{ toJSON(needs) }}
+          expected: >-
+            {"shell":"success","bootstrap-smoke":"${{ github.event_name == 'pull_request' && 'skipped' || 'success' }}","docs":"success","workflows":"success"}
