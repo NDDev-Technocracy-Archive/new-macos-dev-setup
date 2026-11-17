@@ -22,22 +22,22 @@ make help
 Full quality gate:
 
 ```bash
-make check
+just verify
 ```
 
 Individual checks:
 
 ```bash
-make syntax-shell
-make lint-shell
-make lint-workflows
-make lint-docs
-make smoke
+just syntax-shell
+just lint-shell
+just lint-workflows
+just lint-docs
+just test
 ```
 
 ## CI parity
 
-`make check` maps directly to the CI workflow quality gates:
+`just verify` maps directly to the CI workflow quality gates:
 
 - shell lint
 - shell syntax

@@ -25,26 +25,26 @@ Thanks for contributing to `new-macos-dev-setup`.
 2. Create a branch from `main`.
 3. Keep each change logically scoped.
 4. Run local quality gates:
-   - `make check`
+   - `just verify`
 5. Update docs when behavior changes.
 6. Open a pull request.
 
 ## Local quality gates
 
-Use `Makefile` targets from repository root:
+Use `justfile` targets from repository root:
 
 ```bash
-make check
+just verify
 ```
 
 Useful scoped checks:
 
 ```bash
-make syntax-shell
-make lint-shell
-make lint-workflows
-make lint-docs
-make smoke
+just syntax-shell
+just lint-shell
+just lint-workflows
+just lint-docs
+just test
 ```
 
 ## Commit style
@@ -75,5 +75,5 @@ make smoke
 - Change is scoped and documented.
 - Related module docs updated.
 - No accidental regressions to default versions.
-- `make check` passes locally.
+- `just verify` passes locally.
 - `./install-macos.sh --dry-run` behavior still makes sense.
