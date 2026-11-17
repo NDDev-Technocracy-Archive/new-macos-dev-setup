@@ -16,31 +16,36 @@ Provide a single local quality gate that mirrors CI checks before opening a pull
 Run from repository root:
 
 ```bash
-make help
+just
 ```
+
+Prepare the committed Markdown checker with `just setup`. The source environment
+provides Just, Bash, Node, Bun, ShellCheck, actionlint, Lychee and Typos at the
+workflow/manifest selections.
 
 Full quality gate:
 
 ```bash
-make check
+just verify
 ```
 
 Individual checks:
 
 ```bash
-make syntax-shell
-make lint-shell
-make lint-workflows
-make lint-docs
-make smoke
+just syntax-shell
+just lint-shell
+just lint-workflows
+just lint-docs
+just test
 ```
 
 ## CI parity
 
-`make check` maps directly to the CI workflow quality gates:
+`just verify` maps directly to the CI workflow quality gates:
 
 - shell lint
 - shell syntax
 - workflow lint
 - docs lint
-- bootstrap smoke
+- spelling and local/external links
+- retained macOS entrypoint/selector smoke

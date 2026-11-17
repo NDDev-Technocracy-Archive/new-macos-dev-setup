@@ -1,0 +1,11 @@
+{
+  "name": "new-macos-source-checks",
+  "private": true,
+  "packageManager": "bun@1.4.4",
+  "scripts": {
+    "check:markdown": "markdownlint-cli2 \"**/*.md\" \"#node_modules/**\""
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "0.24.1"
+  }
+}

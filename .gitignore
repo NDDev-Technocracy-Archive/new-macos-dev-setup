@@ -13,3 +13,6 @@ venv/
 # Temporary debug artifacts
 /tmp
 *.log
+
+# Source-check dependencies.
+node_modules/

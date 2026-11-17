@@ -1,9 +1,8 @@
 
-> **DEPRECATED.** This repository is archived and no longer maintained.
-> It is kept read-only for reference; its GDS anchor records
-> `lifecycle: archived` under `portfolio:archived-projects`.
+> Retired workstation bootstrap with maintained source checks. The retained
+> installer defaults and behavior remain frozen; source CI does not install them.
 
-> ⚠️ **ABANDONED** (2026-07-07). This repository is frozen history. The owner's
+> Historical status (2026-07-07): the installer was retired. The owner's
 > workstation bootstrap (macOS **and** Ubuntu: system layer, LSPs, quality
 > gates, AI CLI runtimes, and the full terminal layer) now lives in
 > [`NDDev-it-com/rldyour-new-mac-or-ubuntu`](https://github.com/NDDev-it-com/rldyour-new-mac-or-ubuntu).
@@ -96,7 +95,7 @@ git pull
 ## Contributor quality checks
 
 ```bash
-make check
+just verify
 ```
 
 Run this before opening a pull request. It executes shell lint, shell syntax checks, workflow lint, docs lint, and smoke checks.
@@ -171,3 +170,13 @@ The script prints installed tool versions at the end.
 - Claude App: [https://www.claude.com/download](https://www.claude.com/download)
 - Antigravity: [https://antigravity.google/](https://antigravity.google/)
 - BrowserOS: [https://www.browseros.com/](https://www.browseros.com/)
+
+## Source maintenance
+
+Run `just setup` once for the committed Markdown checker, then `just check` for
+offline source validation. An admitted execution host runs `just links` for
+external links and `just test` for the retained entrypoint help/OS-selector smoke.
+`just verify` combines those checks. The Linux selector remains a placeholder;
+its smoke result does not establish Linux installation. CI retains the macOS
+smoke on non-pull-request events, as before. No installation, model/account probe
+or working-device configuration is part of this source maintenance.

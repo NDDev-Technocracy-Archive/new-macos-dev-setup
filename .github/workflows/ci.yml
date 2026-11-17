@@ -2,104 +2,56 @@ name: ci
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, edited]
   push:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-
-concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
-  # Obsolete pull-request heads are cancelled; a running main validation always completes.
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+permissions: {}
 
 jobs:
-  shell:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/tools@c192c6adcf22088abf456635de614d42e8fa3f8d # nddev-cicd-v0.6.20
-        with:
-          capability: shell
-      - name: ShellCheck and Bash syntax
-        run: |
-          find scripts -type f -name "*.sh" -print0 | xargs -0 -n1 shellcheck -x -e SC1090,SC1091,SC2034,SC2086
-          shellcheck -x -e SC1090,SC1091,SC2034,SC2086 install-macos.sh
-          find scripts -type f -name "*.sh" -print0 | xargs -0 -n1 bash -n
-          bash -n install-macos.sh
+  source:
+    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/recipe.yml@d7a4abb010a0cc85967fa09267b100fc90412981 # v0.6.64
+    permissions:
+      contents: read
+    with:
+      hosted-runner: ubuntu-24.04
+      node-version: '26.13.1'
+      bun-version: '1.4.4'
+      tools: just@1.59.0
+      tool-assets: .github/ci-tools.json
+      prepare: setup
+      recipe: verify-source
+      fetch-depth: 0
+      timeout-minutes: 20
 
   bootstrap-smoke:
-    runs-on: macos-26
-    timeout-minutes: 15
-    if: ${{ github.event_name != 'pull_request' }}
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Entrypoint help
-        run: |
-          ./install-macos.sh --help
-          ./scripts/bootstrap/bootstrap.sh --help
-          ./scripts/bootstrap/setup-macos-dev-stack.sh --help
-      - name: Linux placeholder execution
-        run: ./scripts/bootstrap/bootstrap.sh --os linux --skip-health-check
+    if: github.event_name != 'pull_request'
+    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/recipe.yml@d7a4abb010a0cc85967fa09267b100fc90412981 # v0.6.64
+    permissions:
+      contents: read
+    with:
+      hosted-runner: macos-26
+      tools: just@1.59.0
+      recipe: test
+      timeout-minutes: 15
 
-  docs:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
-        with:
-          globs: '**/*.md'
-      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/tools@c192c6adcf22088abf456635de614d42e8fa3f8d # nddev-cicd-v0.6.20
-        with:
-          capability: quality
-      - name: Links and spelling
-        run: |
-          lychee --no-progress --max-concurrency 8 '**/*.md'
-          typos
-
-  workflows:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/tools@c192c6adcf22088abf456635de614d42e8fa3f8d # nddev-cicd-v0.6.20
-        with:
-          capability: security
-      - name: Lint and audit workflows
-        run: |
-          actionlint
-          zizmor --offline --no-progress .github
-      - name: Scan new pull request commits, or the full history on main
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-          HEAD: ${{ github.event.pull_request.head.sha }}
-        run: |
-          if [ -n "$BASE" ]; then
-            gitleaks git --no-banner --redact --log-opts="$BASE..$HEAD" .
-          else
-            gitleaks git --no-banner --redact .
-          fi
+  merge-stops:
+    if: github.event_name == 'pull_request'
+    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/merge-stops.yml@d7a4abb010a0cc85967fa09267b100fc90412981 # v0.6.64
+    permissions:
+      contents: read
 
   gate:
-    needs: [shell, bootstrap-smoke, docs, workflows]
+    needs: [source, bootstrap-smoke, merge-stops]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
+    permissions: {}
     timeout-minutes: 5
     steps:
-      - uses: NDDev-Technocracy-Standarts/std-0004-ci-cd-workflows/.github/actions/gate@c192c6adcf22088abf456635de614d42e8fa3f8d # nddev-cicd-v0.6.20
-        with:
-          needs: ${{ toJSON(needs) }}
-          expected: >-
-            {"shell":"success","bootstrap-smoke":"${{ github.event_name == 'pull_request' && 'skipped' || 'success' }}","docs":"success","workflows":"success"}
+      - name: Require the actual source and native outcomes
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+          EXPECTED: >-
+            {"source":"success","bootstrap-smoke":"${{ github.event_name == 'pull_request' && 'skipped' || 'success' }}","merge-stops":"${{ github.event_name == 'pull_request' && 'success' || 'skipped' }}"}
+        run: jq -e --argjson want "$EXPECTED" 'map_values(.result) == $want' <<< "$NEEDS"
