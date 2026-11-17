@@ -31,6 +31,10 @@ Thanks for contributing to `new-macos-dev-setup`.
 
 ## Local quality gates
 
+Prepare the committed Markdown checker with `just setup`. The source environment
+provides Just, Bash, Node, Bun, ShellCheck, actionlint, Lychee and Typos at the
+workflow/manifest selections.
+
 Use `justfile` targets from repository root:
 
 ```bash
