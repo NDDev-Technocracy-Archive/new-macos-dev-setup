@@ -11,7 +11,7 @@ permissions: {}
 
 jobs:
   source:
-    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/recipe.yml@d7a4abb010a0cc85967fa09267b100fc90412981 # v0.6.64
+    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/recipe.yml@6bd06a55307dccfd7057c1c3260067eb8adc93a1 # v0.6.79
     permissions:
       contents: read
     with:
@@ -27,7 +27,7 @@ jobs:
 
   bootstrap-smoke:
     if: github.event_name != 'pull_request'
-    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/recipe.yml@d7a4abb010a0cc85967fa09267b100fc90412981 # v0.6.64
+    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/recipe.yml@6bd06a55307dccfd7057c1c3260067eb8adc93a1 # v0.6.79
     permissions:
       contents: read
     with:
@@ -38,7 +38,7 @@ jobs:
 
   merge-stops:
     if: github.event_name == 'pull_request'
-    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/merge-stops.yml@d7a4abb010a0cc85967fa09267b100fc90412981 # v0.6.64
+    uses: NDDev-Technocracy-OpenNetwork/nddev-ci/.github/workflows/merge-stops.yml@6bd06a55307dccfd7057c1c3260067eb8adc93a1 # v0.6.79
     permissions:
       contents: read
 
